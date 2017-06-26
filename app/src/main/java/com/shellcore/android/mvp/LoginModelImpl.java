@@ -2,13 +2,17 @@ package com.shellcore.android.mvp;
 
 import android.os.AsyncTask;
 
+import com.shellcore.android.mvp.event.CanceledEvent;
+import com.shellcore.android.mvp.event.PasswordErrorEvent;
+import com.shellcore.android.mvp.event.SuccessEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by Cesar on 26/06/2017.
  */
 
 public class LoginModelImpl implements LoginModel {
-
-    private OnLoginFinishedListener listener;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -19,9 +23,7 @@ public class LoginModelImpl implements LoginModel {
     };
 
     @Override
-    public void login(String userName, String password, OnLoginFinishedListener listener) {
-        this.listener = listener;
-
+    public void login(String userName, String password) {
         // Call login task
         new UserLoginTask(userName, password).execute();
     }
@@ -67,15 +69,15 @@ public class LoginModelImpl implements LoginModel {
         protected void onPostExecute(final Boolean success) {
 
             if (success) {
-                listener.onSuccess();
+                EventBus.getDefault().post(new SuccessEvent());
             } else {
-                listener.onPasswordError();
+                EventBus.getDefault().post(new PasswordErrorEvent());
             }
         }
 
         @Override
         protected void onCancelled() {
-            listener.onCanceled();
-        }
+            EventBus.getDefault().post(new CanceledEvent());
+            }
     }
 }

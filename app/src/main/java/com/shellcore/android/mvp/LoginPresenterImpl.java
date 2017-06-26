@@ -6,7 +6,7 @@ import android.text.TextUtils;
  * Created by Cesar on 26/06/2017.
  */
 
-class LoginPresenterImpl implements LoginPresenter, LoginModel.OnLoginFinishedListener {
+class LoginPresenterImpl implements LoginPresenter {
 
     private LoginView view;
     private LoginModel model;
@@ -33,25 +33,8 @@ class LoginPresenterImpl implements LoginPresenter, LoginModel.OnLoginFinishedLi
         }
 
         view.showProgress(true);
-        model.login(userName, password, this);
+        model.login(userName, password);
 
-    }
-
-    @Override
-    public void onCanceled() {
-        view.showProgress(false);
-    }
-
-    @Override
-    public void onPasswordError() {
-        view.showProgress(false);
-        view.setPasswordError(R.string.error_incorrect_password);
-    }
-
-    @Override
-    public void onSuccess() {
-        view.showProgress(false);
-        view.successAction();
     }
 
     private boolean isEmailValid(String email) {

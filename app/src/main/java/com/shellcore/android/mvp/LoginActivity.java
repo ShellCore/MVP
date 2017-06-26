@@ -30,6 +30,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shellcore.android.mvp.event.CanceledEvent;
+import com.shellcore.android.mvp.event.PasswordErrorEvent;
+import com.shellcore.android.mvp.event.SuccessEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +85,17 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         presenter = new LoginPresenterImpl(this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -131,10 +150,21 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         mPasswordView.requestFocus();
     }
 
-    @Override
-    public void successAction() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSuccessEvent(SuccessEvent event) {
+        showProgress(false);
         Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPasswordErrorEvent(PasswordErrorEvent event) {
+        showProgress(false);
+        setPasswordError(R.string.error_incorrect_password);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnCancelEvent(CanceledEvent event) {
+        showProgress(false);
+    }
 }
 

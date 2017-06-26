@@ -6,16 +6,6 @@ package com.shellcore.android.mvp;
 
 public interface LoginModel {
 
-    interface OnLoginFinishedListener {
-
-        void onCanceled();
-
-        void onPasswordError();
-
-        void onSuccess();
-
-    }
-
-    void login(String userName, String password, OnLoginFinishedListener listener);
+    void login(String userName, String password);
 
 }
