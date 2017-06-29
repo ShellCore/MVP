@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.shellcore.android.mvp.event.CanceledEvent;
 import com.shellcore.android.mvp.event.PasswordErrorEvent;
 import com.shellcore.android.mvp.event.SuccessEvent;
+import com.shellcore.android.mvp.lib.ImageLoader;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,6 +41,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -55,8 +58,11 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
+    // Servicios
+    private ImageLoader imageLoader;
 
     // UI references.
+    private CircleImageView imgAvatar;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -82,7 +88,18 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        imgAvatar = (CircleImageView) findViewById(R.id.img_avatar);
+
+        setupImageView();
+
+        imageLoader.load(imgAvatar, R.mipmap.ic_launcher);
+
         presenter = new LoginPresenterImpl(this);
+    }
+
+    private void setupImageView() {
+        MVPApplication app = (MVPApplication) getApplication();
+        imageLoader = app.getImageLoader();
     }
 
     @Override
